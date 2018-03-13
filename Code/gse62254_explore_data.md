@@ -110,7 +110,7 @@ Can "attach" clinical data to make the variables more accessible:
 attach(gse62254_clinDat)
 ```
 
-No the variables can be referenced directly
+Now the variables can be referenced directly
 
 ``` r
 table(lc)
