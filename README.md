@@ -15,3 +15,8 @@ Directory organisation:
   - README.md: this file
   - Data: folder containing `.RData` versions of the two data sets
   - Code: basic R code to demonstrate how to load and explore the data in R
+
+Within the `Code` directory, the file `gse62254_explore_data.R` contains some basic commands to load the GSE62254 data file, 
+and begin some basic data exploration.  Within RStudio, the "Compile Report" functionality can be used to run the code and generate the follwing basic markdown output:
+
+[Report: gse62254_explore_data.R](gse62254_explore_data.md)
