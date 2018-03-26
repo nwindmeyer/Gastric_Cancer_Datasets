@@ -17,6 +17,6 @@ Directory organisation:
   - Code: basic R code to demonstrate how to load and explore the data in R
 
 Within the `Code` directory, the file `gse62254_explore_data.R` contains some basic commands to load the GSE62254 data file, 
-and begin some basic data exploration.  Within RStudio, the "Compile Report" functionality can be used to run the code and generate the follwing basic markdown output:
+and begin some basic data exploration.  Within RStudio, the "Compile Report" functionality can be used to run the code and generate the following basic markdown output:
 
 [Report: gse62254_explore_data.R](Code/gse62254_explore_data.md)

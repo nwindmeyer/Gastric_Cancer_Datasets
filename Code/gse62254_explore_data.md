@@ -1,13 +1,40 @@
 Gastric Cancer Datasets - GSE62254
 ================
 Mik Black
-13 March 2018
+26 March 2018
+
+Load required packages
 
 ``` r
 library(here)
 ```
 
     ## here() starts at /Users/black/Research/Students/TomMarsland/GitHub/Gastric_Cancer_Datasets
+
+``` r
+library(dplyr)
+```
+
+    ## 
+    ## Attaching package: 'dplyr'
+
+    ## The following objects are masked from 'package:stats':
+    ## 
+    ##     filter, lag
+
+    ## The following objects are masked from 'package:base':
+    ## 
+    ##     intersect, setdiff, setequal, union
+
+``` r
+library(ggplot2)
+```
+
+Set output wider (makes things look a bit nicer: topTable etc)
+
+``` r
+options(width=80)
+```
 
 Load GSE62254 Gastric Cancer data set
 
@@ -57,8 +84,8 @@ Variable names for clinical data set
 names(gse62254_clinDat)
 ```
 
-    ## [1] "dfsEvent" "dfsTime"  "lc"       "molSub"   "stage"    "region"  
-    ## [7] "gender"   "ageCat"
+    ## [1] "dfsEvent" "dfsTime"  "lc"       "molSub"   "stage"    "region"   "gender"  
+    ## [8] "ageCat"
 
 -   dfsEvent: Disease Free Survival Event (0,1)
 -   dfsTime: Time of Disease Free Survival Event (months)
@@ -80,6 +107,26 @@ head(gse62254_clinDat)
     ## 4        0   89.77    Diffuse       MSI     2 antrum   Male  65-69
     ## 5        0   84.60    Diffuse MSS/TP53-     3 antrum   Male  65-69
     ## 6        1    5.77      Mixed MSS/TP53-     2 antrum   Male  55-64
+
+The sample names should be included with the clinical data, but the samples are in the same order as in the expresion data, so we can add those as a new variable:
+
+``` r
+gse62254_clinDat = gse62254_clinDat %>% mutate(., PatID = colnames(gse62254_expDat))
+```
+
+Now we have patients IDs in a column called PatID:
+
+``` r
+head(gse62254_clinDat)
+```
+
+    ##   dfsEvent dfsTime         lc    molSub stage region gender ageCat      PatID
+    ## 1       NA    3.97 Intestinal       MSI     2   body   Male  65-69 GSM1523727
+    ## 2       NA    4.03 Intestinal       MSI     2   body Female  65-69 GSM1523728
+    ## 3        0   74.97    Diffuse MSS/TP53+     2 antrum Female    <55 GSM1523729
+    ## 4        0   89.77    Diffuse       MSI     2 antrum   Male  65-69 GSM1523744
+    ## 5        0   84.60    Diffuse MSS/TP53-     3 antrum   Male  65-69 GSM1523745
+    ## 6        1    5.77      Mixed MSS/TP53-     2 antrum   Male  55-64 GSM1523746
 
 First 5 rows and columns of the gene expression data: rows are genes (row names are gene symbols) and columns are tumours
 
@@ -131,3 +178,164 @@ table(lc, molSub)
     ##   Diffuse     38  20        46        38
     ##   Intestinal   8  43        59        40
     ##   Mixed        0   5         2         1
+
+Extracting expression information for a single gene (e.g., Androgen Receptor, AR).
+
+``` r
+ar_data = gse62254_expDat[rownames(gse62254_expDat) == "AR"]
+```
+
+Basic histogram of the AR data
+
+``` r
+ar_data %>% as.data.frame() %>%  
+  ggplot(aes(x=.)) + 
+  geom_histogram() + 
+  ggtitle("Androgran receptor (AR) expression") +
+  xlab("Log2 expression")
+```
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+![](gse62254_explore_data_files/figure-markdown_github/unnamed-chunk-17-1.png)
+
+Boxplot of AR expression versus Molecular Subtype
+
+``` r
+cbind(ar_data, as.factor(molSub)) %>% as.data.frame() %>%  
+  ggplot(aes(x=molSub, y=ar_data, group=molSub, colour=molSub)) + 
+  geom_boxplot() + 
+  ggtitle("Androgen receptor (AR) expression versus molecular subtype") +
+  xlab("Molecular Subtype") +
+  ylab("Log2 expression")
+```
+
+![](gse62254_explore_data_files/figure-markdown_github/unnamed-chunk-18-1.png)
+
+Differential expression analysis according to Lauren Classification. <BR> Lauren Classification has three levels:
+
+``` r
+table(lc)
+```
+
+    ## lc
+    ##    Diffuse Intestinal      Mixed 
+    ##        142        150          8
+
+Let's get rid of the "Mixed" samples
+
+``` r
+mixed = which(lc=="Mixed")
+```
+
+These are the indexes for the mixed samples
+
+``` r
+mixed
+```
+
+    ## [1]   6  47  57  83 102 105 110 235
+
+using the minus sign we can remove these from the Lauren data:
+
+``` r
+lc[-mixed] %>%  table()
+```
+
+    ## .
+    ##    Diffuse Intestinal      Mixed 
+    ##        142        150          0
+
+Since `lc` is a factor, it still knows about the Mixed class, but it correctly reports that there are none present. If we want to remove that class entirely, we can convert lc to a vector:
+
+``` r
+lc[-mixed] %>%  as.vector() %>%  table()
+```
+
+    ## .
+    ##    Diffuse Intestinal 
+    ##        142        150
+
+Use this for our analysis:
+
+``` r
+lc_no_mixed = lc[-mixed] %>%  as.vector()
+gse62254_expDat_no_mixed = gse62254_expDat[,-mixed]
+```
+
+Set up for limma analysis
+
+``` r
+library(limma)
+```
+
+Create design matrix with Mixed samples excluded
+
+``` r
+design = model.matrix(~lc_no_mixed)
+```
+
+Check first few rows
+
+``` r
+head(design)
+```
+
+    ##   (Intercept) lc_no_mixedIntestinal
+    ## 1           1                     1
+    ## 2           1                     1
+    ## 3           1                     0
+    ## 4           1                     0
+    ## 5           1                     0
+    ## 6           1                     0
+
+Second column should match table created above
+
+``` r
+table(design[,2])
+```
+
+    ## 
+    ##   0   1 
+    ## 142 150
+
+Perform limma analysis
+
+``` r
+fit = lmFit(gse62254_expDat_no_mixed, design)
+fit = eBayes(fit)
+```
+
+Create topTable
+
+``` r
+tt = topTable(fit, coef=2, n=nrow(gse62254_expDat_no_mixed))
+```
+
+Output top 20 most dfferentially expressed genes
+
+``` r
+head(tt, 20)
+```
+
+    ##                 logFC  AveExpr         t      P.Value    adj.P.Val        B
+    ## IL6ST     -0.16396591 3.328689 -8.951464 4.174277e-17 7.185901e-13 28.23827
+    ## MS4A7     -0.28362450 2.579621 -8.852444 8.421991e-17 7.185901e-13 27.55287
+    ## GYPC      -0.19075888 2.242194 -8.821095 1.050826e-16 7.185901e-13 27.33679
+    ## LY86      -0.21664867 2.197271 -8.617042 4.390207e-16 2.251627e-12 25.94114
+    ## C10orf128 -0.22828905 2.094741 -8.418884 1.727996e-15 7.089966e-12 24.60430
+    ## ARHGEF6   -0.21584374 2.352208 -8.334014 3.089831e-15 1.056465e-11 24.03747
+    ## CCL19     -0.44017230 2.037610 -8.193991 7.998995e-15 1.878220e-11 23.10999
+    ## ISCU      -0.09156914 3.361835 -8.184034 8.555606e-15 1.878220e-11 23.04441
+    ## MEF2C     -0.23179501 2.409474 -8.180486 8.763069e-15 1.878220e-11 23.02105
+    ## A2M       -0.22885517 3.243139 -8.173999 9.155350e-15 1.878220e-11 22.97836
+    ## ITPR1     -0.21443809 2.157850 -8.150358 1.073760e-14 2.002562e-11 22.82296
+    ## GGTA1P    -0.29174384 2.051620 -8.133982 1.198931e-14 2.049673e-11 22.71548
+    ## CNRIP1    -0.24258076 2.280505 -8.090193 1.608992e-14 2.539113e-11 22.42876
+    ## P2RY8     -0.21709138 1.899318 -8.006169 2.821845e-14 4.135011e-11 21.88131
+    ## ATP8B2    -0.25244209 2.271546 -7.993462 3.071106e-14 4.200250e-11 21.79883
+    ## SLC9A9    -0.15886582 1.953995 -7.973100 3.516626e-14 4.508974e-11 21.66685
+    ## ABI3BP    -0.45450398 2.145099 -7.898790 5.755091e-14 6.285878e-11 21.18700
+    ## IL10RA    -0.22970335 2.368341 -7.897915 5.788485e-14 6.285878e-11 21.18136
+    ## IL16      -0.20979651 1.782184 -7.897049 5.821676e-14 6.285878e-11 21.17579
+    ## NAPSB     -0.27011887 1.868212 -7.883285 6.375749e-14 6.539925e-11 21.08724
