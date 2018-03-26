@@ -118,14 +118,3 @@ design = model.matrix(~lc_no_mixed)
 head(design)
 #' Second column should match table created above
 table(design[,2])
-
-#' Perform limma analysis
-fit = lmFit(gse62254_expDat_no_mixed, design)
-fit = eBayes(fit)
-
-#' Create topTable
-tt = topTable(fit, coef=2, n=nrow(gse62254_expDat_no_mixed))
-
-#' Output top 20 most dfferentially expressed genes
-head(tt, 20)
-
