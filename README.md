@@ -20,3 +20,7 @@ Within the `Code` directory, the file `gse62254_explore_data.R` contains some ba
 and begin some basic data exploration.  Within RStudio, the "Compile Report" functionality can be used to run the code and generate the following basic markdown output:
 
 [Report: gse62254_explore_data.R](Code/gse62254_explore_data.md)
+
+Edits to Tom'scode for limma analysis:
+
+[Report: gse62254_tom_limma_code.R](Code/gse62254_tom_limma_code.md)
