@@ -298,3 +298,5 @@ table(design[,2])
     ## 
     ##   0   1 
     ## 142 150
+
+Should now be able to use `lc_no_mixed` and `deisgn` to run `limma` analysis and detect genes that are differentially expressed between the Diffuse and Intestinal classes.

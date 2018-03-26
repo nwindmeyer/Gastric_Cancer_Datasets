@@ -118,3 +118,7 @@ design = model.matrix(~lc_no_mixed)
 head(design)
 #' Second column should match table created above
 table(design[,2])
+
+#' Should now be able to use `lc_no_mixed` and `deisgn` to run `limma` analysis
+#' and detect genes that are differentially expressed between the Diffuse and 
+#' Intestinal classes.
