@@ -24,3 +24,10 @@ and begin some basic data exploration.  Within RStudio, the "Compile Report" fun
 Edits to Tom'scode for limma analysis:
 
 [Report: gse62254_tom_limma_code.R](Code/gse62254_tom_limma_code.md)
+
+Test file:
+
+[My test file](Code/test.md)
+
+
+
