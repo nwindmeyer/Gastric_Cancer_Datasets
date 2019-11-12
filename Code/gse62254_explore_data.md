@@ -9,7 +9,7 @@ Load required packages
 library(here)
 ```
 
-    ## here() starts at /Users/black/Research/Students/TomMarsland/GitHub/Gastric_Cancer_Datasets
+    ## here() starts at /Users/black/Gastric_Cancer_Datasets
 
 ``` r
 library(dplyr)
@@ -29,6 +29,12 @@ library(dplyr)
 ``` r
 library(ggplot2)
 ```
+
+    ## Registered S3 methods overwritten by 'ggplot2':
+    ##   method         from 
+    ##   [.quosures     rlang
+    ##   c.quosures     rlang
+    ##   print.quosures rlang
 
 Set output wider (makes things look a bit nicer: topTable etc)
 
@@ -87,14 +93,16 @@ names(gse62254_clinDat)
     ## [1] "dfsEvent" "dfsTime"  "lc"       "molSub"   "stage"    "region"   "gender"  
     ## [8] "ageCat"
 
--   dfsEvent: Disease Free Survival Event (0,1)
--   dfsTime: Time of Disease Free Survival Event (months)
--   lc: Lauren Classification
--   molSub: Molecular Subtype (Cristescu et al)
--   stage: tumour stage
--   region: anatomic region of tumour
--   gender: patient gender
--   ageCat: patient age category First few lines of the clinical data:
+  - dfsEvent: Disease Free Survival Event (0,1)
+  - dfsTime: Time of Disease Free Survival Event (months)
+  - lc: Lauren Classification
+  - molSub: Molecular Subtype (Cristescu et al)
+  - stage: tumour stage
+  - region: anatomic region of tumour
+  - gender: patient gender
+  - ageCat: patient age category First few lines of the clinical data:
+
+<!-- end list -->
 
 ``` r
 head(gse62254_clinDat)
@@ -108,7 +116,9 @@ head(gse62254_clinDat)
     ## 5        0   84.60    Diffuse MSS/TP53-     3 antrum   Male  65-69
     ## 6        1    5.77      Mixed MSS/TP53-     2 antrum   Male  55-64
 
-The sample names should be included with the clinical data, but the samples are in the same order as in the expresion data, so we can add those as a new variable:
+The sample names should be included with the clinical data, but the
+samples are in the same order as in the expresion data, so we can add
+those as a new variable:
 
 ``` r
 gse62254_clinDat = gse62254_clinDat %>% mutate(., PatID = colnames(gse62254_expDat))
@@ -128,7 +138,8 @@ head(gse62254_clinDat)
     ## 5        0   84.60    Diffuse MSS/TP53-     3 antrum   Male  65-69 GSM1523745
     ## 6        1    5.77      Mixed MSS/TP53-     2 antrum   Male  55-64 GSM1523746
 
-First 5 rows and columns of the gene expression data: rows are genes (row names are gene symbols) and columns are tumours
+First 5 rows and columns of the gene expression data: rows are genes
+(row names are gene symbols) and columns are tumours
 
 ``` r
 gse62254_expDat[1:5,1:5]
@@ -151,7 +162,7 @@ table(gse62254_clinDat$lc)
     ##    Diffuse Intestinal      Mixed 
     ##        142        150          8
 
-Can "attach" clinical data to make the variables more accessible:
+Can “attach” clinical data to make the variables more accessible:
 
 ``` r
 attach(gse62254_clinDat)
@@ -179,7 +190,8 @@ table(lc, molSub)
     ##   Intestinal   8  43        59        40
     ##   Mixed        0   5         2         1
 
-Extracting expression information for a single gene (e.g., Androgen Receptor, AR).
+Extracting expression information for a single gene (e.g., Androgen
+Receptor, AR).
 
 ``` r
 ar_data = gse62254_expDat[rownames(gse62254_expDat) == "AR"]
@@ -197,7 +209,7 @@ ar_data %>% as.data.frame() %>%
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
-![](gse62254_explore_data_files/figure-markdown_github/unnamed-chunk-17-1.png)
+![](gse62254_explore_data_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
 
 Boxplot of AR expression versus Molecular Subtype
 
@@ -210,9 +222,10 @@ cbind(ar_data, as.factor(molSub)) %>% as.data.frame() %>%
   ylab("Log2 expression")
 ```
 
-![](gse62254_explore_data_files/figure-markdown_github/unnamed-chunk-18-1.png)
+![](gse62254_explore_data_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
 
-Differential expression analysis according to Lauren Classification. <BR> Lauren Classification has three levels:
+Differential expression analysis according to Lauren Classification.
+<BR> Lauren Classification has three levels:
 
 ``` r
 table(lc)
@@ -222,7 +235,7 @@ table(lc)
     ##    Diffuse Intestinal      Mixed 
     ##        142        150          8
 
-Let's get rid of the "Mixed" samples
+Let’s get rid of the “Mixed” samples
 
 ``` r
 mixed = which(lc=="Mixed")
@@ -246,7 +259,9 @@ lc[-mixed] %>%  table()
     ##    Diffuse Intestinal      Mixed 
     ##        142        150          0
 
-Since `lc` is a factor, it still knows about the Mixed class, but it correctly reports that there are none present. If we want to remove that class entirely, we can convert lc to a vector:
+Since `lc` is a factor, it still knows about the Mixed class, but it
+correctly reports that there are none present. If we want to remove that
+class entirely, we can convert lc to a vector:
 
 ``` r
 lc[-mixed] %>%  as.vector() %>%  table()
@@ -299,4 +314,6 @@ table(design[,2])
     ##   0   1 
     ## 142 150
 
-Should now be able to use `lc_no_mixed` and `deisgn` to run `limma` analysis and detect genes that are differentially expressed between the Diffuse and Intestinal classes.
+Should now be able to use `lc_no_mixed` and `deisgn` to run `limma`
+analysis and detect genes that are differentially expressed between the
+Diffuse and Intestinal classes.
