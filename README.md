@@ -2,6 +2,9 @@
 
 Repository containing code and data files relating to two Gastic Cancer genomic data sets.
 
+**NB - the GSE62254 microarray data file was updated on 27 March 2020 (reprocessed using RMA with
+no background correction).**
+
 1. TCGA Stomach Cancer Data
     - Processed RNA-seq gene expression data from 415 gastric tumours, for 20502 genes.
     - Cancer Genome Atlas Research Network. (2014). Comprehensive molecular characterization of gastric adenocarcinoma. _Nature_, 513(7517), 202–209. http://doi.org/10.1038/nature13480
