@@ -1,9 +1,12 @@
 #' ---
 #' title: Gastric Cancer Datasets - GSE62254
 #' author: Mik Black
-#' date: 26 March 2018
+#' date: 27 March 2020
 #' output: github_document
 #' ---
+
+#' Updated Affymetrix microarray dataset (GSE62254) - re-normalised 
+#' using RMA without background correction (processed 28 May 2019).
 
 #' Load required packages
 library(here)
@@ -66,21 +69,21 @@ table(lc)
 #' Table of Lauren Class versus Molecular Subtype
 table(lc, molSub)
 
-#' Extracting expression information for a single gene (e.g., Androgen Receptor, AR).
-ar_data = gse62254_expDat[rownames(gse62254_expDat) == "AR"]
+#' Extracting expression information for a single gene (e.g., AKT3).
+akt3_data = gse62254_expDat[rownames(gse62254_expDat) == "AKT3"]
 
-#' Basic histogram of the AR data
-ar_data %>% as.data.frame() %>%  
+#' Basic histogram of the AKT3 data
+akt3_data %>% as.data.frame() %>%  
   ggplot(aes(x=.)) + 
   geom_histogram() + 
   ggtitle("Androgran receptor (AR) expression") +
   xlab("Log2 expression")
 
-#' Boxplot of AR expression versus Molecular Subtype
-cbind(ar_data, as.factor(molSub)) %>% as.data.frame() %>%  
-  ggplot(aes(x=molSub, y=ar_data, group=molSub, colour=molSub)) + 
+#' Boxplot of AKT3 expression versus Molecular Subtype
+cbind(akt3_data, as.factor(molSub)) %>% as.data.frame() %>%  
+  ggplot(aes(x=molSub, y=akt3_data, group=molSub, colour=molSub)) + 
   geom_boxplot() + 
-  ggtitle("Androgen receptor (AR) expression versus molecular subtype") +
+  ggtitle("AKT3 expression versus molecular subtype") +
   xlab("Molecular Subtype") +
   ylab("Log2 expression")
 

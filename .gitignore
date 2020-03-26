@@ -1,4 +1,8 @@
+notes.md
+Code/mergeData.R
 Code/limma_code.R
+Data/gse62254_gastric_cancer-OLD.RData
+Data/gse62254_expDat-20190528.RData
 
 # History files
 .Rhistory

@@ -1,15 +1,17 @@
 Gastric Cancer Datasets - GSE62254
 ================
 Mik Black
-26 March 2018
+27 March 2020
 
-Load required packages
+Updated Affymetrix microarray dataset (GSE62254) - re-normalised using
+RMA without background correction (processed 28 May 2019). Load required
+packages
 
 ``` r
 library(here)
 ```
 
-    ## here() starts at /Users/black/Gastric_Cancer_Datasets
+    ## here() starts at /Users/black/GitHub/Gastric_Cancer_Datasets
 
 ``` r
 library(dplyr)
@@ -82,7 +84,7 @@ dim(gse62254_clinDat)
 dim(gse62254_expDat)
 ```
 
-    ## [1] 20515   300
+    ## [1] 20184   300
 
 Variable names for clinical data set
 
@@ -146,11 +148,11 @@ gse62254_expDat[1:5,1:5]
 ```
 
     ##          GSM1523727 GSM1523728 GSM1523729 GSM1523744 GSM1523745
-    ## A1BG       1.628701   1.614114   1.649555   1.671960   1.636245
-    ## A1BG-AS1   1.494905   1.403046   1.407533   1.514318   1.471773
-    ## A1CF       1.671671   2.360347   2.589079   1.517690   2.335692
-    ## A2M        2.696250   3.182516   3.254146   2.844064   3.258593
-    ## A2M-AS1    1.153275   1.191874   1.297499   1.125547   1.145582
+    ## A1BG       6.756177   6.758535   6.831012   6.797610   6.722564
+    ## A1BG-AS1   6.707870   6.587865   6.573142   6.737519   6.664203
+    ## A1CF       7.006766   8.283814   8.770454   6.861547   8.133696
+    ## A2M        9.110612  10.660462  10.881237   9.614966  10.890116
+    ## A2M-AS1    6.291446   6.409076   6.495454   6.305241   6.289737
 
 Table of Lauren Class data
 
@@ -190,17 +192,16 @@ table(lc, molSub)
     ##   Intestinal   8  43        59        40
     ##   Mixed        0   5         2         1
 
-Extracting expression information for a single gene (e.g., Androgen
-Receptor, AR).
+Extracting expression information for a single gene (e.g., AKT3).
 
 ``` r
-ar_data = gse62254_expDat[rownames(gse62254_expDat) == "AR"]
+akt3_data = gse62254_expDat[rownames(gse62254_expDat) == "AKT3"]
 ```
 
-Basic histogram of the AR data
+Basic histogram of the AKT3 data
 
 ``` r
-ar_data %>% as.data.frame() %>%  
+akt3_data %>% as.data.frame() %>%  
   ggplot(aes(x=.)) + 
   geom_histogram() + 
   ggtitle("Androgran receptor (AR) expression") +
@@ -211,13 +212,13 @@ ar_data %>% as.data.frame() %>%
 
 ![](gse62254_explore_data_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
 
-Boxplot of AR expression versus Molecular Subtype
+Boxplot of AKT3 expression versus Molecular Subtype
 
 ``` r
-cbind(ar_data, as.factor(molSub)) %>% as.data.frame() %>%  
-  ggplot(aes(x=molSub, y=ar_data, group=molSub, colour=molSub)) + 
+cbind(akt3_data, as.factor(molSub)) %>% as.data.frame() %>%  
+  ggplot(aes(x=molSub, y=akt3_data, group=molSub, colour=molSub)) + 
   geom_boxplot() + 
-  ggtitle("Androgen receptor (AR) expression versus molecular subtype") +
+  ggtitle("AKT3 expression versus molecular subtype") +
   xlab("Molecular Subtype") +
   ylab("Log2 expression")
 ```
