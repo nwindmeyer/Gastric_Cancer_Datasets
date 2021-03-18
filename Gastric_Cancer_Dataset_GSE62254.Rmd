@@ -1,0 +1,75 @@
+---
+title: "Gastric Cancer Dataset Practise - GSE62254"
+author: "Natasha Windmeyer"
+date: "19/03/2021"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This Practise document is using the Affymetrix microarray dataset (GSE62254) - re-normalised using RMA without background correction
+
+```{r}
+install.packages('here')
+```
+
+```{r}
+library(here)
+library(dplyr)
+library(ggplot2)
+```
+The 'here()' starts at /Users/black/GitHub/Gastric_Cancer_Datasets
+
+```{r}
+options(width=80)
+```
+This sets the output wider to 80, making things look a bit nicer
+
+```{r}
+load(here('Data/gse62254_gastric_cancer.RData'))
+```
+This loads the GSE62254 Gastric Cancer Dataset
+
+```{r}
+ls()
+```
+This confirms what was loaded
+
+```{r}
+class(gse62254_clinDat)
+class(gse62254_expDat)
+```
+This tells you what type of objects the datasets are
+
+```{r}
+dim(gse62254_clinDat)
+dim(gse62254_expDat)
+```
+This gives you the dimensions of the datasets
+
+The Variable names for the Clinical Dataset
+```{r}
+names(gse62254_clinDat)
+```
+dfsEvent: Disease Free Survival Event (0,1)
+dfsTime: Time of Disease Free Survival Event (months)
+lc: Lauren Classification
+molSub: Molecular Subtype (Cristescu et al)
+stage: Tumour stage
+region: Anatomic region of tumour
+gender: Patient gender
+ageCat: Patient age category
+
+```{r}
+head(gse62254_clinDat)
+```
+Gives you the first 6 lines of the clinical dataset
+
+The sample names are not included in the clinical data, so we need to add this as a new column
+```{r}
+gse62254_clinDat = gse62254_clinDat %>% mutate(, PatID = colnames(gse62254_expDat))
+head(gse62254_clinDat)
+```
+
