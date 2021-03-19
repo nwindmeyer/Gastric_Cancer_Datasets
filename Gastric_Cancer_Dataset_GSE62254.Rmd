@@ -137,3 +137,17 @@ lc_no_mixed = lc[-mixed] %>%  as.vector()
 gse62254_expDat_no_mixed = gse62254_expDat[,-mixed]
 ```
 
+```{r}
+library(limma)
+```
+
+```{r}
+design = model.matrix(~lc_no_mixed)
+head(design)
+```
+This creates a design matrix with the Mixed samples excluded from the data
+
+```{r}
+table(design[,2])
+```
+The second column should match the table created above, which means that we should now be able to use 'lc_no_mixed' and 'design' to run a 'limma' analysis and detect genes that are differentially expressed between the Diffuse and Instestinal classes.
