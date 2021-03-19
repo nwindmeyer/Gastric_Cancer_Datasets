@@ -72,4 +72,68 @@ The sample names are not included in the clinical data, so we need to add this a
 gse62254_clinDat = gse62254_clinDat %>% mutate(, PatID = colnames(gse62254_expDat))
 head(gse62254_clinDat)
 ```
+We now have added the Patient IDs to a new column called PatID
+
+```{r}
+gse62254_expDat[1:5,1:5]
+```
+This shows the first five rows and columns of the gene expression data, where the rows are genes and the columns are tumours
+
+```{r}
+table(gse62254_clinDat$lc)
+```
+This produces a table of the Lauren Classification data
+
+```{r}
+attach(gse62254_clinDat)
+```
+This 'attaches' the clinical data to make it more accessible, which means that instead of using gse62254_clinDat$lc to access the lc data, you can just put lc. This is a cheat and it works well for datasets with a very long name, however, if two datasets with the 'attach' have the same variable name then it gets very messy very quickly.
+
+```{r}
+table(lc)
+```
+This is a table of Lauren Classification produced without needing to use gse62254_clinDat$lc, due to the 'attach' function.
+
+```{r}
+table(lc, molSub)
+```
+This produces a table of the Lauren Classifications vs the Molecular Subtypes
+
+```{r}
+akt3_data = gse62254_expDat[rownames(gse62254_expDat) == "AKT3"]
+```
+This extracts the expression information for the single AKT3 gene, and puts it into a dataset called akt3_data
+
+```{r}
+akt3_data %>% as.data.frame() %>% ggplot(aes(x=.)) + geom_histogram() + ggtitle("Androgran receptor (AR) expression") + xlab("Log2 expression")
+```
+This produces a Histogram of the Androgan Receptor Expression Data (AKT3 data)
+
+```{r}
+cbind(akt3_data, as.factor(molSub)) %>% as.data.frame() %>%
+  ggplot(aes(x=molSub, y=akt3_data, group=molSub, colour=molSub)) + geom_boxplot() + ggtitle("AKT3 expression versus molecular subtype") + xlab("Molecular Subtype") + ylab("Log2 expression")
+```
+This combines the AKT3 data and the Molecular Subtype data as a single dataframe and then produces a boxplot of this dataframe, representing the Log2 Expression data for the AKT3 gene across the different Molecular subtypes.
+
+```{r}
+mixed = which(lc == "Mixed")
+mixed
+```
+This pulls the Mixed column from the lc data, creating a dataframe containing these values called 'mixed'
+
+```{r}
+lc[-mixed] %>% table()
+```
+This creates a table of the lc data with the 'mixed' data removed. As 'lc' is still a factor, it knows about the 'Mixed class', but reports correctly that there are none present.
+
+```{r}
+lc[-mixed] %>%  as.vector() %>%  table()
+```
+This creates a table of the lc data with the 'mixed' column removed entirely by converting the lc to a vector.
+
+Use these for the Analysis:
+```{r}
+lc_no_mixed = lc[-mixed] %>%  as.vector()
+gse62254_expDat_no_mixed = gse62254_expDat[,-mixed]
+```
 
