@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 This Practise document is using the Affymetrix microarray dataset (GSE62254) - re-normalised using RMA without background correction
 
-```{r}
+```{r eval=FALSE}
 install.packages('here')
 ```
 
