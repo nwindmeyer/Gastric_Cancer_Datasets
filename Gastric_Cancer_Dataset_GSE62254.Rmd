@@ -20,7 +20,6 @@ library(here)
 library(dplyr)
 library(ggplot2)
 ```
-The 'here()' starts at /Users/black/GitHub/Gastric_Cancer_Datasets
 
 ```{r}
 options(width=80)
@@ -53,14 +52,14 @@ The Variable names for the Clinical Dataset
 ```{r}
 names(gse62254_clinDat)
 ```
-dfsEvent: Disease Free Survival Event (0,1)
-dfsTime: Time of Disease Free Survival Event (months)
-lc: Lauren Classification
-molSub: Molecular Subtype (Cristescu et al)
-stage: Tumour stage
-region: Anatomic region of tumour
-gender: Patient gender
-ageCat: Patient age category
+dfsEvent: Disease Free Survival Event (0,1). 
+dfsTime: Time of Disease Free Survival Event (months). 
+lc: Lauren Classification. 
+molSub: Molecular Subtype (Cristescu et al). 
+stage: Tumour stage. 
+region: Anatomic region of tumour. 
+gender: Patient gender. 
+ageCat: Patient age category. 
 
 ```{r}
 head(gse62254_clinDat)
@@ -104,7 +103,7 @@ akt3_data = gse62254_expDat[rownames(gse62254_expDat) == "AKT3"]
 ```
 This extracts the expression information for the single AKT3 gene, and puts it into a dataset called akt3_data
 
-```{r}
+```{r AKT3_Expression_Histogram}
 akt3_data %>% as.data.frame() %>% ggplot(aes(x=.)) + geom_histogram() + ggtitle("Androgran receptor (AR) expression") + xlab("Log2 expression")
 ```
 This produces a Histogram of the Androgan Receptor Expression Data (AKT3 data)

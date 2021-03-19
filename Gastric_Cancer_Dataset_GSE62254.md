@@ -205,7 +205,7 @@ akt3_data %>% as.data.frame() %>% ggplot(aes(x=.)) + geom_histogram() + ggtitle(
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
-![](Gastric_Cancer_Dataset_GSE62254_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+![](Gastric_Cancer_Dataset_GSE62254_files/figure-gfm/AKT3_Expression_Histogram-1.png)<!-- -->
 This produces a Histogram of the Androgan Receptor Expression Data (AKT3
 data)
 
@@ -214,7 +214,7 @@ cbind(akt3_data, as.factor(molSub)) %>% as.data.frame() %>%
   ggplot(aes(x=molSub, y=akt3_data, group=molSub, colour=molSub)) + geom_boxplot() + ggtitle("AKT3 expression versus molecular subtype") + xlab("Molecular Subtype") + ylab("Log2 expression")
 ```
 
-![](Gastric_Cancer_Dataset_GSE62254_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+![](Gastric_Cancer_Dataset_GSE62254_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
 This combines the AKT3 data and the Molecular Subtype data as a single
 dataframe and then produces a boxplot of this dataframe, representing
 the Log2 Expression data for the AKT3 gene across the different
